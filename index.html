@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
+
+    <meta
+        name="description"
+        content="Anonymous random text chat platform."
+    >
+
+    <title>OmiglPro</title>
+
+    <link rel="icon" type="image/png" href="./assets/images/SVG_ICON.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="site-body">
+
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a class="site-header__brand" href="#home" aria-label="OmiglPro home">
+                <img class="site-header__logo" src="./assets/images/LOGO.png" alt="" aria-hidden="true">
+                <span class="site-header__brand-name"><span class="site-header__brand-base">Omigl</span><span class="site-header__brand-pro">Pro</span></span>
+            </a>
+
+            <nav class="site-header__nav" aria-label="Main navigation">
+                <a class="site-header__link site-header__link--active" href="#home" aria-current="page">Home</a>
+                <a class="site-header__link" href="#features">Features</a>
+                <a class="site-header__link" href="#safety">Safety</a>
+                <a class="site-header__link" href="#how-it-works">How It Works</a>
+            </nav>
+
+            <div class="site-header__actions">
+                <a class="site-header__button site-header__button--login" href="#login">Login</a>
+                <a class="site-header__button site-header__button--primary" href="#start-chat">Start Chat</a>
+            </div>
+
+            <!-- Local SVG icons live in assets/images/icons/; no external icon URLs are used. -->
+            <button class="site-header__theme-toggle" type="button" aria-label="Switch to light theme" aria-pressed="false">
+                <img class="site-header__theme-icon site-header__theme-icon--sparkle" src="./assets/images/icons/sparkle.svg" alt="" aria-hidden="true">
+                <img class="site-header__theme-icon site-header__theme-icon--moon" src="./assets/images/icons/moon.svg" alt="" aria-hidden="true">
+            </button>
+
+            <button
+                class="site-header__menu-toggle"
+                type="button"
+                aria-expanded="false"
+                aria-controls="site-header-menu"
+                aria-label="Open navigation menu"
+            >
+                <svg class="site-header__menu-icon site-header__menu-icon--menu" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M4 7h16M4 12h16M4 17h16"></path>
+                </svg>
+                <svg class="site-header__menu-icon site-header__menu-icon--close" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="m6 6 12 12M18 6 6 18"></path>
+                </svg>
+            </button>
+
+            <div class="site-header__mobile-menu" id="site-header-menu" aria-hidden="true">
+                <nav class="site-header__mobile-nav" aria-label="Mobile navigation">
+                    <a class="site-header__mobile-link" href="#home">Home</a>
+                    <a class="site-header__mobile-link" href="#features">Features</a>
+                    <a class="site-header__mobile-link" href="#safety">Safety</a>
+                    <a class="site-header__mobile-link" href="#how-it-works">How It Works</a>
+                    <a class="site-header__mobile-link" href="#login">Login</a>
+                    <button class="site-header__theme-toggle site-header__mobile-theme-toggle" type="button" aria-label="Switch to light theme" aria-pressed="false">
+                        <img class="site-header__theme-icon site-header__theme-icon--sparkle" src="./assets/images/icons/sparkle.svg" alt="" aria-hidden="true">
+                        <img class="site-header__theme-icon site-header__theme-icon--moon" src="./assets/images/icons/moon.svg" alt="" aria-hidden="true">
+                        <span>Theme</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="site-main">
+
+        <section class="hero" id="home" aria-labelledby="hero-title">
+            <div class="hero__inner">
+                <div class="hero__content">
+                    <h1 class="hero__title" id="hero-title">Talk to <span class="hero__accent">someone new</span>. No signup. Just chat.</h1>
+                    <p class="hero__description">Meet random people from around the world, start a conversation instantly, and move on whenever you're ready.</p>
+                </div>
+
+                <div class="hero__visual">
+                    <video class="hero__image" autoplay muted loop playsinline aria-label="OmiglPro chat experience">
+                        <source src="./assets/images/videos/Video.webm" type="video/webm">
+                    </video>
+                </div>
+            </div>
+        </section>
+
+        <section class="conversation-section" aria-labelledby="conversation-title">
+            <div class="conversation-section__inner">
+                <div class="conversation-section__visual">
+                    <video class="conversation-section__video" autoplay muted loop playsinline aria-label="People connecting through OmiglPro">
+                        <source src="./assets/images/videos/Video2.webm" type="video/webm">
+                    </video>
+                </div>
+
+                <div class="conversation-section__content">
+                    <h2 class="conversation-section__title" id="conversation-title" data-reveal>One world.<br><span class="conversation-section__accent">Millions of conversations.</span></h2>
+                    <p class="conversation-section__description" data-reveal>Connect with someone from anywhere in the world and start a conversation in seconds. No profiles to build. No awkward introductions. Just a new person and a fresh conversation.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="conversation-cta" aria-label="Start a new conversation">
+            <a class="conversation-cta__link" href="#start-chat">
+                <span>Start a New Conversation</span>
+                <img class="conversation-cta__icon" src="./assets/images/icons/start-chat.svg" alt="" aria-hidden="true">
+            </a>
+        </div>
+
+        <section class="connection-section" aria-labelledby="connection-title">
+            <div class="connection-section__inner">
+                <div class="connection-section__content">
+                    <h2 class="connection-section__title" id="connection-title">Meet the world, <span class="connection-section__accent">one conversation at a time.</span></h2>
+                    <p class="connection-section__description">From nearby to across the globe, OmiglPro brings random people together for simple, real-time conversations.</p>
+                </div>
+
+                <div class="connection-section__visual">
+                    <video class="connection-section__video" autoplay muted loop playsinline aria-label="People meeting through OmiglPro">
+                        <source src="./assets/images/videos/video3.webm" type="video/webm">
+                    </video>
+                </div>
+            </div>
+        </section>
+
+        <section class="features-section" id="features" aria-labelledby="features-title">
+            <div class="features-section__inner">
+                <div class="features-section__intro">
+                    <p class="features-section__eyebrow">FEATURES</p>
+                    <h2 class="features-section__title" id="features-title">Everything you need to <span class="features-section__accent">just start talking.</span></h2>
+                    <p class="features-section__description">Simple tools designed to make random conversations fast, effortless and enjoyable.</p>
+                </div>
+
+                <div class="features-section__grid">
+                    <article class="feature-item feature-item--wide">
+                        <img class="feature-item__icon" src="./assets/images/icons/instant-match.svg" alt="" aria-hidden="true">
+                        <div class="feature-item__body">
+                            <h3 class="feature-item__title">Instant Random Matching</h3>
+                            <p class="feature-item__description">Get connected with a random person in seconds without creating an account.</p>
+                        </div>
+                        <span class="feature-item__number" aria-hidden="true">01</span>
+                    </article>
+
+                    <article class="feature-item">
+                        <img class="feature-item__icon" src="./assets/images/icons/no-signup.svg" alt="" aria-hidden="true">
+                        <div class="feature-item__body">
+                            <h3 class="feature-item__title">No Signup Required</h3>
+                            <p class="feature-item__description">Jump straight into conversations without profiles, registration or unnecessary setup.</p>
+                        </div>
+                        <span class="feature-item__number" aria-hidden="true">02</span>
+                    </article>
+
+                    <article class="feature-item">
+                        <img class="feature-item__icon" src="./assets/images/icons/next-chat.svg" alt="" aria-hidden="true">
+                        <div class="feature-item__body">
+                            <h3 class="feature-item__title">Next Anytime</h3>
+                            <p class="feature-item__description">Not feeling the conversation? Move on instantly and meet someone new.</p>
+                        </div>
+                        <span class="feature-item__number" aria-hidden="true">03</span>
+                    </article>
+
+                    <article class="feature-item feature-item--wide">
+                        <img class="feature-item__icon" src="./assets/images/icons/realtime-chat.svg" alt="" aria-hidden="true">
+                        <div class="feature-item__body">
+                            <h3 class="feature-item__title">Real-Time Chat</h3>
+                            <p class="feature-item__description">Messages, typing indicators and connection updates happen instantly.</p>
+                        </div>
+                        <span class="feature-item__number" aria-hidden="true">04</span>
+                    </article>
+
+                    <article class="feature-item feature-item--wide">
+                        <img class="feature-item__icon" src="./assets/images/icons/global-chat.svg" alt="" aria-hidden="true">
+                        <div class="feature-item__body">
+                            <h3 class="feature-item__title">Global Conversations</h3>
+                            <p class="feature-item__description">Meet people from different countries and discover conversations beyond your usual circle.</p>
+                        </div>
+                        <span class="feature-item__number" aria-hidden="true">05</span>
+                    </article>
+
+                    <article class="feature-item">
+                        <img class="feature-item__icon" src="./assets/images/icons/privacy.svg" alt="" aria-hidden="true">
+                        <div class="feature-item__body">
+                            <h3 class="feature-item__title">Privacy by Default</h3>
+                            <p class="feature-item__description">Chat without building a public profile. Conversations are not permanently stored by default.</p>
+                        </div>
+                        <span class="feature-item__number" aria-hidden="true">06</span>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="safety-section" id="safety" aria-labelledby="safety-title">
+            <div class="safety-section__inner">
+                <div class="safety-section__intro">
+                    <p class="safety-section__eyebrow">SAFETY</p>
+                    <h2 class="safety-section__title" id="safety-title">Safety <span class="safety-section__accent">comes first.</span></h2>
+                    <p class="safety-section__description">OmiglPro is designed to make anonymous conversations more comfortable, respectful and secure.</p>
+
+                    <div class="safety-section__signal" aria-hidden="true">
+                        <span class="safety-section__signal-mark"></span>
+                        <span class="safety-section__signal-text">Built for better conversations</span>
+                    </div>
+                </div>
+
+                <div class="safety-section__points">
+                    <article class="safety-point">
+                        <span class="safety-point__number">01</span>
+                        <img class="safety-point__icon" src="./assets/images/icons/content-moderation.svg" alt="" aria-hidden="true">
+                        <div>
+                            <h3 class="safety-point__title">Active Content Moderation</h3>
+                            <p class="safety-point__description">Our systems help detect inappropriate, abusive and harmful content during conversations.</p>
+                        </div>
+                    </article>
+
+                    <article class="safety-point">
+                        <span class="safety-point__number">02</span>
+                        <img class="safety-point__icon" src="./assets/images/icons/contact-protection.svg" alt="" aria-hidden="true">
+                        <div>
+                            <h3 class="safety-point__title">Contact Information Protection</h3>
+                            <p class="safety-point__description">The platform is designed to identify and help prevent the sharing of phone numbers, email addresses and other personal contact details.</p>
+                        </div>
+                    </article>
+
+                    <article class="safety-point">
+                        <span class="safety-point__number">03</span>
+                        <img class="safety-point__icon" src="./assets/images/icons/spam-protection.svg" alt="" aria-hidden="true">
+                        <div>
+                            <h3 class="safety-point__title">Spam &amp; Abuse Protection</h3>
+                            <p class="safety-point__description">Automated protections help detect suspicious behaviour, repeated spam and common attempts to bypass moderation.</p>
+                        </div>
+                    </article>
+
+                    <article class="safety-point">
+                        <span class="safety-point__number">04</span>
+                        <img class="safety-point__icon" src="./assets/images/icons/privacy-design.svg" alt="" aria-hidden="true">
+                        <div>
+                            <h3 class="safety-point__title">Privacy by Design</h3>
+                            <p class="safety-point__description">Guest users can chat without creating a public profile, and conversations are not permanently stored by default.</p>
+                        </div>
+                    </article>
+
+                    <article class="safety-point">
+                        <span class="safety-point__number">05</span>
+                        <img class="safety-point__icon" src="./assets/images/icons/report-block.svg" alt="" aria-hidden="true">
+                        <div>
+                            <h3 class="safety-point__title">Report &amp; Block</h3>
+                            <p class="safety-point__description">Users should be able to quickly report or block someone when a conversation becomes inappropriate or uncomfortable.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-section" id="how-it-works" aria-labelledby="how-title">
+            <div class="how-section__inner">
+                <div class="how-section__intro">
+                    <p class="how-section__eyebrow">HOW IT WORKS</p>
+                    <h2 class="how-section__title" id="how-title">How it <span class="how-section__accent">works.</span></h2>
+                    <p class="how-section__description">Start a conversation in seconds. No complicated setup, no profiles to build.</p>
+                </div>
+
+                <div class="how-section__flow">
+                    <article class="how-step">
+                        <div class="how-step__marker"><span>01</span></div>
+                        <div class="how-step__content">
+                            <img class="how-step__icon" src="./assets/images/icons/start-chat.svg" alt="" aria-hidden="true">
+                            <h3 class="how-step__title">Start Chat</h3>
+                            <p class="how-step__description">Open OmiglPro and start chatting instantly. No signup is required for the core experience.</p>
+                        </div>
+                    </article>
+
+                    <article class="how-step">
+                        <div class="how-step__marker"><span>02</span></div>
+                        <div class="how-step__content">
+                            <img class="how-step__icon" src="./assets/images/icons/meet-someone.svg" alt="" aria-hidden="true">
+                            <h3 class="how-step__title">Meet Someone New</h3>
+                            <p class="how-step__description">Get connected with a random person and begin a real-time conversation.</p>
+                        </div>
+                    </article>
+
+                    <article class="how-step">
+                        <div class="how-step__marker"><span>03</span></div>
+                        <div class="how-step__content">
+                            <img class="how-step__icon" src="./assets/images/icons/keep-talking.svg" alt="" aria-hidden="true">
+                            <h3 class="how-step__title">Keep Talking or Move On</h3>
+                            <p class="how-step__description">Enjoy the conversation, or use Next whenever you are ready to meet someone new.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <div class="conversation-cta" aria-label="Start a new conversation">
+            <a class="conversation-cta__link" href="#start-chat">
+                <span>Start a New Conversation</span>
+                <img class="conversation-cta__icon" src="./assets/images/icons/start-chat.svg" alt="" aria-hidden="true">
+            </a>
+        </div>
+
+        <footer class="site-footer" id="footer">
+            <div class="site-footer__inner">
+                <div class="site-footer__brand-block">
+                    <a class="site-footer__brand" href="#home" aria-label="OmiglPro home">
+                        <img class="site-footer__logo" src="./assets/images/LOGO.png" alt="" aria-hidden="true">
+                        <span>Omigl<span class="site-footer__brand-accent">Pro</span></span>
+                    </a>
+                    <p class="site-footer__tagline">Simple conversations. New people. One world.</p>
+                </div>
+
+                <nav class="site-footer__column" aria-label="Footer navigation">
+                    <h2 class="site-footer__heading">Navigation</h2>
+                    <a class="site-footer__link" href="#home">Home</a>
+                    <a class="site-footer__link" href="#features">Features</a>
+                    <a class="site-footer__link" href="#safety">Safety</a>
+                    <a class="site-footer__link" href="#how-it-works">How It Works</a>
+                </nav>
+
+                <nav class="site-footer__column" aria-label="Product navigation">
+                    <h2 class="site-footer__heading">Product</h2>
+                    <a class="site-footer__link" href="#start-chat">Start Chat</a>
+                    <a class="site-footer__link" href="#privacy">Privacy</a>
+                    <a class="site-footer__link" href="#terms">Terms</a>
+                </nav>
+
+                <div class="site-footer__column site-footer__social-column">
+                    <h2 class="site-footer__heading">Social</h2>
+                    <div class="site-footer__socials">
+                        <a class="site-footer__social-link" href="#footer" aria-label="OmiglPro on X">
+                            <img src="./assets/images/icons/social-x.svg" alt="" aria-hidden="true">
+                        </a>
+                        <a class="site-footer__social-link" href="#footer" aria-label="OmiglPro on Instagram">
+                            <img src="./assets/images/icons/social-instagram.svg" alt="" aria-hidden="true">
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="site-footer__bottom">
+                <span>&copy; 2026 OmiglPro. All rights reserved.</span>
+                <span>Made for better conversations.</span>
+            </div>
+        </footer>
+
+        <!-- =========================================
+             LANDING PAGE BACKGROUND SYSTEM
+             ========================================= -->
+
+        <section
+            class="background-section background-section--part-one"
+            aria-hidden="true"
+        >
+            <div class="background-section__stars background-section__stars--top"></div>
+        </section>
+
+
+        <section
+            class="background-section background-section--part-two"
+            aria-hidden="true"
+        >
+        </section>
+
+
+        <section
+            class="background-section background-section--part-three"
+            aria-hidden="true"
+        >
+            <div class="background-section__stars background-section__stars--bottom"></div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
