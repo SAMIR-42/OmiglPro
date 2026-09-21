@@ -48,8 +48,7 @@
 					</div>
 				</div>
 				<div class="chat-topbar-actions">
-					<button class="chat-next-button" id="chat-next" type="button" hidden>Next <span aria-hidden="true">&rarr;</span></button>
-					<span class="chat-next-hint" aria-hidden="true">-&gt;</span>
+					<button class="chat-next-button" id="chat-next" type="button" data-tooltip="Press the right arrow key to continue" hidden>Next <span aria-hidden="true">&rarr;</span></button>
 				</div>
 			</div>
 
@@ -102,6 +101,7 @@
 	</div>
 
 	<script src="/socket.io/socket.io.js"></script>
+	<script src="../blocked-words.js"></script>
 	<script src="chat.js"></script>
 </body>
 </html>

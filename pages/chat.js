@@ -29,11 +29,12 @@ const countryOptions = [
 ];
 
 const formatGender = (gender) => gender ? gender.charAt(0).toUpperCase() + gender.slice(1) : 'Not provided';
+const isValidName = (name) => /^[A-Za-z]{1,7}$/.test(name.trim());
 
 const isCompleteProfile = (details) => Boolean(
 	details
 	&& typeof details.name === 'string'
-	&& details.name.trim().length >= 2
+	&& isValidName(details.name)
 	&& (details.gender === 'male' || details.gender === 'female')
 	&& typeof details.country === 'string'
 	&& details.country.trim().length > 0
@@ -63,6 +64,7 @@ const enterProfileEdit = (requiresSetup = false) => {
 	profileView.classList.add('is-editing');
 	profileView.classList.toggle('is-required', requiresSetup);
 	profileRequiredMessage.hidden = !requiresSetup;
+	profileRequiredMessage.textContent = 'Name must be 1 to 7 letters, with no numbers or symbols.';
 	profileEditButton.hidden = true;
 	profileSaveButton.hidden = !requiresSetup;
 	profileSaveButton.disabled = true;
@@ -191,6 +193,7 @@ const matchedTypingVideo = document.querySelector('#matched-typing-video');
 let isMatched = false;
 let isTyping = false;
 let stopTypingTimer = null;
+let matchedPartner = null;
 
 const resetTypingState = () => {
 	isTyping = false;
@@ -226,16 +229,32 @@ const setWaitingState = () => {
 	chatMessages.replaceChildren();
 };
 
-const addMessage = (message, isSelf = false) => {
+const addMessage = (message, isSelf = false, senderName = '') => {
 	const messageElement = document.createElement('div');
 	messageElement.className = `chat-message${isSelf ? ' chat-message--self' : ''}`;
-	messageElement.textContent = message;
+	const avatar = document.createElement('img');
+	avatar.className = 'chat-message__avatar';
+	avatar.src = `../assets/images/icons/${isSelf && profileDetails.gender === 'female' ? 'female' : !isSelf && matchedPartner?.gender === 'female' ? 'female' : 'male'}.svg`;
+	avatar.alt = '';
+	avatar.setAttribute('aria-hidden', 'true');
+
+	const content = document.createElement('div');
+	content.className = 'chat-message__content';
+	const sender = document.createElement('span');
+	sender.className = 'chat-message__sender';
+	sender.textContent = isSelf ? (profileDetails.name || 'You') : (senderName || matchedPartner?.name || 'User');
+	const text = document.createElement('span');
+	text.className = 'chat-message__text';
+	text.textContent = message;
+	content.append(sender, text);
+	messageElement.append(avatar, content);
 	chatMessages.append(messageElement);
 	chatMessages.scrollTop = chatMessages.scrollHeight;
 };
 
 const setMatchedState = (partner) => {
 	isMatched = true;
+	matchedPartner = partner;
 	resetTypingState();
 	chatShell.classList.add('is-connected');
 	chatConnectionCard.classList.add('is-connected');
@@ -252,7 +271,6 @@ const setMatchedState = (partner) => {
 };
 
 const showTypingVideo = (gender) => {
-    console.log('Typing event received for gender:', gender); // TEMP DEBUG
 	const videoPath = `../assets/images/videos/${gender === 'female' ? 'girl' : 'boy'}_bitimoji.webm`;
 	if (matchedTypingVideo.getAttribute('src') !== videoPath) {
 		matchedTypingVideo.src = videoPath;
@@ -270,6 +288,7 @@ const showTypingVideo = (gender) => {
 const hideTypingVideo = () => {
 	matchedProfileMedia.classList.remove('is-typing');
 	matchedTypingVideo.pause();
+	matchedTypingVideo.currentTime = 0;
 };
 
 const countryFlag = (country) => {
@@ -283,8 +302,20 @@ const countryFlag = (country) => {
 	return code ? String.fromCodePoint(...code.split('').map((letter) => 127397 + letter.charCodeAt(0))) : '';
 };
 
+const sanitizeMessage = (value) => {
+	const blockedWords = Array.isArray(window.omiglproBlockedWords) ? window.omiglproBlockedWords : [];
+	const escapedWords = blockedWords.map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+	const blockedWordPattern = escapedWords.length ? new RegExp(`\\b(?:${escapedWords.join('|')})\\b`, 'gi') : null;
+	let sanitizedMessage = value.replace(/(?<!\d)\d{10}(?!\d)/g, '');
+	if (blockedWordPattern) {
+		sanitizedMessage = sanitizedMessage.replace(blockedWordPattern, '');
+	}
+	return sanitizedMessage.replace(/\s+/g, ' ').trim();
+};
+
 const sendMessage = () => {
-	const message = chatMessageInput.value.trim();
+	const message = sanitizeMessage(chatMessageInput.value);
+	chatMessageInput.value = message;
 	if (!chatSocket || !isMatched || !message) {
 		return;
 	}
@@ -307,8 +338,27 @@ const notifyTyping = () => {
 	stopTypingTimer = window.setTimeout(() => {
 		isTyping = false;
 		chatSocket.emit('stop-typing');
-	}, 650);
+	}, 1500);
 };
+
+document.addEventListener('keydown', (event) => {
+	if (window.innerWidth <= 600 || !isMatched || profileDrawer.classList.contains('is-open')) {
+		return;
+	}
+
+	const activeElement = document.activeElement;
+	const isEditingField = activeElement instanceof HTMLInputElement
+		|| activeElement instanceof HTMLTextAreaElement
+		|| activeElement instanceof HTMLSelectElement
+		|| activeElement?.isContentEditable;
+	if (isEditingField || event.ctrlKey || event.metaKey || event.altKey || event.key.length !== 1) {
+		return;
+	}
+
+	chatMessageInput.focus();
+	chatMessageInput.setRangeText(event.key, chatMessageInput.selectionStart, chatMessageInput.selectionEnd, 'end');
+	chatMessageInput.dispatchEvent(new Event('input', { bubbles: true }));
+});
 
 chatMessages.addEventListener('mouseenter', () => {
 	if (window.innerWidth > 600 && isMatched) {
@@ -339,7 +389,7 @@ if (chatSocket) {
 	chatSocket.on('partner-left', setWaitingState);
 	chatSocket.on('typing', (typingUser) => showTypingVideo(typingUser.gender));
 	chatSocket.on('stop-typing', hideTypingVideo);
-	chatSocket.on('message', (message) => addMessage(`${message.sender}: ${message.text}`));
+	chatSocket.on('message', (message) => addMessage(message.text, false, message.sender));
 }
 
 chatNextButton.addEventListener('click', () => {
@@ -347,6 +397,24 @@ chatNextButton.addEventListener('click', () => {
 		setWaitingState();
 		chatSocket.emit('next');
 	}
+});
+
+document.addEventListener('keydown', (event) => {
+	if (window.innerWidth <= 600 || event.key !== 'ArrowRight' || !isMatched || profileDrawer.classList.contains('is-open')) {
+		return;
+	}
+
+	const activeElement = document.activeElement;
+	const isEditingField = activeElement instanceof HTMLInputElement
+		|| activeElement instanceof HTMLTextAreaElement
+		|| activeElement instanceof HTMLSelectElement
+		|| activeElement?.isContentEditable;
+	if (isEditingField) {
+		return;
+	}
+
+	event.preventDefault();
+	chatNextButton.click();
 });
 
 chatSendButton.addEventListener('click', sendMessage);
