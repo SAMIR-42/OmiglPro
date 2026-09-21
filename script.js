@@ -275,3 +275,175 @@ if (howSection) {
         howSection.classList.add('is-visible');
     }
 }
+
+const chatModal = document.querySelector('#chat-modal');
+const chatDialog = chatModal?.querySelector('.chat-modal__dialog');
+const chatForm = document.querySelector('#chat-form');
+const chatName = document.querySelector('#chat-name');
+const chatNameMessage = document.querySelector('#chat-name-message');
+const genderInputs = document.querySelectorAll('input[name="gender"]');
+const countryPicker = document.querySelector('#country-picker');
+const countryTrigger = document.querySelector('#country-picker-trigger');
+const countryMenu = document.querySelector('#country-picker-menu');
+const countrySearch = document.querySelector('#chat-country-search');
+const countryList = document.querySelector('#country-list');
+const countryInput = document.querySelector('#chat-country');
+const countrySelected = document.querySelector('.country-picker__selected');
+const countryEmpty = document.querySelector('.country-picker__empty');
+const adultInput = document.querySelector('#chat-adult');
+const joinButton = document.querySelector('.chat-form__submit');
+const startChatLinks = document.querySelectorAll('a[href="#start-chat"]');
+let lastFocusedElement = null;
+
+const countries = [
+    ['United States', 'US'], ['Canada', 'CA'], ['United Kingdom', 'GB'], ['Australia', 'AU'],
+    ['Germany', 'DE'], ['France', 'FR'], ['Spain', 'ES'], ['Italy', 'IT'], ['Brazil', 'BR'],
+    ['Mexico', 'MX'], ['India', 'IN'], ['Japan', 'JP'], ['South Korea', 'KR'], ['Philippines', 'PH'],
+    ['Nigeria', 'NG'], ['South Africa', 'ZA'], ['Turkey', 'TR'], ['United Arab Emirates', 'AE'],
+    ['Sweden', 'SE'], ['Netherlands', 'NL']
+];
+
+const normalizeName = (value) => value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[04@]/g, (character) => ({ '0': 'o', '4': 'a', '@': 'a' })[character])
+    .replace(/[1!]/g, 'i')
+    .replace(/[3]/g, 'e')
+    .replace(/[5$]/g, 's')
+    .replace(/[^a-z0-9]/g, '');
+
+const hasBlockedName = (value) => {
+    const normalized = normalizeName(value);
+    return window.omiglproBlockedWords.some((word) => normalized.includes(normalizeName(word)));
+};
+
+const closeCountryMenu = () => {
+    countryMenu.hidden = true;
+    countryTrigger.setAttribute('aria-expanded', 'false');
+};
+
+const renderCountries = (query = '') => {
+    const normalizedQuery = query.trim().toLowerCase();
+    const visibleCountries = countries.filter(([name]) => name.toLowerCase().includes(normalizedQuery));
+    countryList.innerHTML = visibleCountries.map(([name, code]) => `
+        <li role="presentation">
+            <button class="country-option" type="button" role="option" data-country="${name}" data-code="${code}">
+                <img src="./assets/images/icons/country-flag.svg" alt="" aria-hidden="true"><span>${name}</span>
+            </button>
+        </li>
+    `).join('');
+    countryEmpty.hidden = visibleCountries.length > 0;
+};
+
+const updateJoinState = () => {
+    const nameIsValid = chatName.value.trim().length >= 2 && !hasBlockedName(chatName.value);
+    const genderIsSelected = Boolean(document.querySelector('input[name="gender"]:checked'));
+    joinButton.disabled = !(nameIsValid && genderIsSelected && countryInput.value && adultInput.checked);
+};
+
+const validateName = () => {
+    const name = chatName.value.trim();
+    if (name && name.length < 2) {
+        chatNameMessage.textContent = 'Please enter at least 2 characters.';
+    } else if (name && hasBlockedName(name)) {
+        chatNameMessage.textContent = 'Please choose a different name.';
+    } else {
+        chatNameMessage.textContent = '';
+    }
+    updateJoinState();
+};
+
+const setCountry = (name, code) => {
+    countryInput.value = name;
+    countrySelected.innerHTML = `<img src="./assets/images/icons/country-flag.svg" alt="" aria-hidden="true"><span>${name}</span>`;
+    countrySelected.dataset.code = code;
+    closeCountryMenu();
+    updateJoinState();
+};
+
+const closeChatModal = () => {
+    chatModal.classList.remove('is-open');
+    chatModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-is-open');
+    closeCountryMenu();
+    if (lastFocusedElement) {
+        lastFocusedElement.focus();
+    }
+};
+
+const openChatModal = (event) => {
+    event.preventDefault();
+    lastFocusedElement = event.currentTarget;
+    chatModal.classList.add('is-open');
+    chatModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-is-open');
+    window.setTimeout(() => chatName.focus(), 80);
+};
+
+renderCountries();
+startChatLinks.forEach((link) => link.addEventListener('click', openChatModal));
+chatModal.querySelectorAll('[data-modal-close]').forEach((element) => element.addEventListener('click', closeChatModal));
+chatName.addEventListener('input', validateName);
+genderInputs.forEach((input) => input.addEventListener('change', updateJoinState));
+adultInput.addEventListener('change', updateJoinState);
+
+countryTrigger.addEventListener('click', () => {
+    const isOpen = !countryMenu.hidden;
+    countryMenu.hidden = isOpen;
+    countryTrigger.setAttribute('aria-expanded', String(!isOpen));
+    if (!isOpen) {
+        countrySearch.value = '';
+        renderCountries();
+        window.setTimeout(() => countrySearch.focus(), 0);
+    }
+});
+
+countrySearch.addEventListener('input', (event) => renderCountries(event.target.value));
+countryList.addEventListener('click', (event) => {
+    const option = event.target.closest('[data-country]');
+    if (option) {
+        setCountry(option.dataset.country, option.dataset.code);
+    }
+});
+
+chatForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    validateName();
+    if (joinButton.disabled) {
+        return;
+    }
+
+    sessionStorage.setItem('omiglpro-chat-details', JSON.stringify({
+        name: chatName.value.trim(),
+        gender: document.querySelector('input[name="gender"]:checked').value,
+        country: countryInput.value,
+        adultConfirmed: adultInput.checked
+    }));
+    window.location.href = './pages/chat.html';
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && chatModal.classList.contains('is-open')) {
+        closeChatModal();
+    }
+
+    if (event.key === 'Tab' && chatModal.classList.contains('is-open')) {
+        const focusable = chatDialog.querySelectorAll('button, input, [tabindex]:not([tabindex="-1"])');
+        const firstFocusable = focusable[0];
+        const lastFocusable = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === firstFocusable) {
+            event.preventDefault();
+            lastFocusable.focus();
+        } else if (!event.shiftKey && document.activeElement === lastFocusable) {
+            event.preventDefault();
+            firstFocusable.focus();
+        }
+    }
+});
+
+document.addEventListener('pointerdown', (event) => {
+    if (!countryMenu.hidden && !countryPicker.contains(event.target)) {
+        closeCountryMenu();
+    }
+});
