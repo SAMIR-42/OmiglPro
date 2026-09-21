@@ -2,6 +2,7 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const { Server } = require('socket.io');
+const blockedWords = require('./blocked-words');
 
 const app = express();
 const server = http.createServer(app);
@@ -9,6 +10,16 @@ const io = new Server(server);
 const waitingUsers = new Map();
 const matchedUsers = new Map();
 const port = process.env.PORT || 3000;
+
+const sanitizeMessage = (value) => {
+    const escapedWords = blockedWords.map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const blockedWordPattern = new RegExp(`\\b(?:${escapedWords.join('|')})\\b`, 'gi');
+    return value
+        .replace(/(?<!\d)\d{10}(?!\d)/g, '')
+        .replace(blockedWordPattern, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+};
 
 app.use(express.static(__dirname));
 
@@ -75,7 +86,7 @@ const matchWaitingUsers = () => {
 
 io.on('connection', (socket) => {
     socket.on('join-pool', (profile) => {
-        if (!profile || typeof profile.name !== 'string' || typeof profile.gender !== 'string' || typeof profile.country !== 'string') {
+        if (!profile || typeof profile.name !== 'string' || !/^[A-Za-z]{1,7}$/.test(profile.name.trim()) || typeof profile.gender !== 'string' || typeof profile.country !== 'string') {
             socket.emit('server-error', 'A valid profile is required.');
             return;
         }
@@ -98,8 +109,12 @@ io.on('connection', (socket) => {
         if (!partner || typeof message !== 'string' || !message.trim()) {
             return;
         }
+        const sanitizedMessage = sanitizeMessage(message);
+        if (!sanitizedMessage) {
+            return;
+        }
         partner.emit('message', {
-            text: message.trim().slice(0, 1000),
+            text: sanitizedMessage.slice(0, 1000),
             sender: socket.data.profile ? socket.data.profile.name : 'User'
         });
     });

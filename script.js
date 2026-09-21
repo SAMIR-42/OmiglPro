@@ -318,6 +318,8 @@ const hasBlockedName = (value) => {
     return window.omiglproBlockedWords.some((word) => normalized.includes(normalizeName(word)));
 };
 
+const isValidName = (value) => /^[A-Za-z]{1,7}$/.test(value);
+
 const closeCountryMenu = () => {
     countryMenu.hidden = true;
     countryTrigger.setAttribute('aria-expanded', 'false');
@@ -337,15 +339,16 @@ const renderCountries = (query = '') => {
 };
 
 const updateJoinState = () => {
-    const nameIsValid = chatName.value.trim().length >= 2 && !hasBlockedName(chatName.value);
+    const name = chatName.value.trim();
+    const nameIsValid = isValidName(name) && !hasBlockedName(name);
     const genderIsSelected = Boolean(document.querySelector('input[name="gender"]:checked'));
     joinButton.disabled = !(nameIsValid && genderIsSelected && countryInput.value && adultInput.checked);
 };
 
 const validateName = () => {
     const name = chatName.value.trim();
-    if (name && name.length < 2) {
-        chatNameMessage.textContent = 'Please enter at least 2 characters.';
+    if (name && !isValidName(name)) {
+        chatNameMessage.textContent = 'Name must be 1 to 7 letters.';
     } else if (name && hasBlockedName(name)) {
         chatNameMessage.textContent = 'Please choose a different name.';
     } else {
