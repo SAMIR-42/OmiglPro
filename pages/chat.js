@@ -7,12 +7,22 @@ const profileView = document.querySelector('#profile-view');
 const profileEditButton = document.querySelector('#profile-edit');
 const profileSaveButton = document.querySelector('#profile-save');
 const profileNameInput = document.querySelector('#profile-name-input');
-const profileGenderInput = document.querySelector('#profile-gender-input');
+const profileGenderInputs = document.querySelectorAll('input[name="profile-gender"]');
 const profileCountryInput = document.querySelector('#profile-country-input');
+const profileCountryPicker = document.querySelector('#profile-country-picker');
+const profileCountryMenu = document.querySelector('#profile-country-menu');
+const profileCountrySearch = document.querySelector('#profile-country-search');
+const profileCountryList = document.querySelector('#profile-country-list');
+const profileCountrySelected = profileCountryInput.querySelector('.profile-country-picker__selected');
+const profileCountryEmpty = document.querySelector('.profile-country-picker__empty');
 const profileViewName = document.querySelector('#profile-view-name');
 const profileDetailName = document.querySelector('#profile-detail-name');
 const profileDetailGender = document.querySelector('#profile-detail-gender');
 const profileDetailCountry = document.querySelector('#profile-detail-country');
+const profileAutoMessageSummary = document.querySelector('#profile-auto-message-summary');
+const profileAutoMessageEnabled = document.querySelector('#profile-auto-message-enabled');
+const profileAutoMessageInput = document.querySelector('#profile-auto-message-input');
+const profileAutoMessageError = document.querySelector('#profile-auto-message-error');
 const profileRequiredMessage = document.querySelector('#profile-required-message');
 let profileDetails = {};
 let isProfileEditing = false;
@@ -30,6 +40,30 @@ const countryOptions = [
 
 const formatGender = (gender) => gender ? gender.charAt(0).toUpperCase() + gender.slice(1) : 'Not provided';
 const isValidName = (name) => /^[A-Za-z]{1,7}$/.test(name.trim());
+const normalizeAutoMessage = (value) => value.replace(/\s+/g, ' ').trim();
+const countAutoMessageWords = (value) => value ? value.split(/\s+/).length : 0;
+const containsBlockedWord = (value) => {
+	const blockedWords = Array.isArray(window.omiglproBlockedWords) ? window.omiglproBlockedWords : [];
+	const escapedWords = blockedWords
+		.filter((word) => typeof word === 'string' && word.trim())
+		.sort((first, second) => second.length - first.length)
+		.map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+	if (!escapedWords.length) {
+		return false;
+	}
+	return new RegExp(`(?:^|[^a-z0-9])(?:${escapedWords.join('|')})(?=$|[^a-z0-9])`, 'i').test(value);
+};
+
+const validateAutoMessage = (value) => {
+	const normalizedMessage = normalizeAutoMessage(value);
+	if (countAutoMessageWords(normalizedMessage) > 10) {
+		return 'Keep your automatic message to 10 words or fewer.';
+	}
+	if (containsBlockedWord(normalizedMessage)) {
+		return 'Please remove restricted language from your automatic message.';
+	}
+	return '';
+};
 
 const isCompleteProfile = (details) => Boolean(
 	details
@@ -41,7 +75,22 @@ const isCompleteProfile = (details) => Boolean(
 );
 
 const populateCountries = () => {
-	profileCountryInput.innerHTML = '<option value="">Choose a country</option>' + countryOptions.map(([country]) => `<option value="${country}">${country}</option>`).join('');
+	const query = profileCountrySearch.value.trim().toLowerCase();
+	const visibleCountries = countryOptions.filter(([country]) => country.toLowerCase().includes(query));
+	profileCountryList.innerHTML = visibleCountries.map(([country, code]) => `<li role="presentation"><button class="profile-country-option" type="button" role="option" data-country="${country}" data-code="${code}"><img src="../assets/images/icons/country-flag.svg" alt="" aria-hidden="true"><span>${country}</span></button></li>`).join('');
+	profileCountryEmpty.hidden = visibleCountries.length > 0;
+};
+
+const closeCountryMenu = () => {
+	profileCountryMenu.hidden = true;
+	profileCountryInput.setAttribute('aria-expanded', 'false');
+};
+
+const setProfileCountry = (country) => {
+	profileCountryInput.dataset.value = country;
+	profileCountrySelected.innerHTML = `<span>${country}</span>`;
+	closeCountryMenu();
+	updateSaveButton();
 };
 
 const renderProfileDetails = () => {
@@ -50,6 +99,7 @@ const renderProfileDetails = () => {
 	profileDetailName.textContent = name;
 	profileDetailGender.textContent = formatGender(profileDetails.gender);
 	profileDetailCountry.textContent = profileDetails.country || 'Not provided';
+	profileAutoMessageSummary.textContent = profileDetails.autoMessageEnabled && profileDetails.autoMessage ? `On: ${profileDetails.autoMessage}` : 'Off';
 	if (userName) {
 		userName.textContent = profileDetails.name ? `, ${profileDetails.name}` : '';
 	}
@@ -59,8 +109,12 @@ const enterProfileEdit = (requiresSetup = false) => {
 	isProfileEditing = true;
 	profileRequiresSetup = requiresSetup;
 	profileNameInput.value = profileDetails.name || '';
-	profileGenderInput.value = profileDetails.gender || '';
-	profileCountryInput.value = profileDetails.country || '';
+	profileGenderInputs.forEach((input) => { input.checked = input.value === profileDetails.gender; });
+	profileCountryInput.dataset.value = profileDetails.country || '';
+	profileCountrySelected.innerHTML = profileDetails.country ? `<span>${profileDetails.country}</span>` : '<span class="profile-country-picker__placeholder">Choose your country</span>';
+	profileAutoMessageEnabled.checked = Boolean(profileDetails.autoMessageEnabled);
+	profileAutoMessageInput.value = profileDetails.autoMessage || '';
+	profileAutoMessageError.hidden = true;
 	profileView.classList.add('is-editing');
 	profileView.classList.toggle('is-required', requiresSetup);
 	profileRequiredMessage.hidden = !requiresSetup;
@@ -74,8 +128,10 @@ const enterProfileEdit = (requiresSetup = false) => {
 const getEditedDetails = () => ({
 	...profileDetails,
 	name: profileNameInput.value.trim(),
-	gender: profileGenderInput.value,
-	country: profileCountryInput.value
+	gender: document.querySelector('input[name="profile-gender"]:checked')?.value || '',
+	country: profileCountryInput.dataset.value || '',
+	autoMessageEnabled: profileAutoMessageEnabled.checked,
+	autoMessage: normalizeAutoMessage(profileAutoMessageInput.value)
 });
 
 const updateSaveButton = () => {
@@ -84,8 +140,11 @@ const updateSaveButton = () => {
 	}
 	const nextDetails = getEditedDetails();
 	const isValid = isCompleteProfile(nextDetails);
+	const autoMessageError = validateAutoMessage(nextDetails.autoMessage);
 	const hasChanges = JSON.stringify(nextDetails) !== JSON.stringify(profileDetails);
-	profileSaveButton.disabled = !isValid;
+	profileAutoMessageError.textContent = autoMessageError;
+	profileAutoMessageError.hidden = !autoMessageError;
+	profileSaveButton.disabled = !isValid || Boolean(autoMessageError);
 	profileSaveButton.hidden = profileRequiresSetup ? false : !isValid || !hasChanges;
 };
 
@@ -107,6 +166,12 @@ const closeProfile = () => {
 	document.body.classList.remove('profile-is-open');
 	if (lastProfileFocus) {
 		lastProfileFocus.focus();
+	}
+	if (!profileReady) {
+		window.setTimeout(() => {
+			openProfile();
+			enterProfileEdit(true);
+		}, 0);
 	}
 };
 
@@ -139,15 +204,44 @@ profileDrawer.querySelectorAll('[data-profile-close]').forEach((element) => {
 });
 profileEditButton.addEventListener('click', enterProfileEdit);
 
-[profileNameInput, profileGenderInput, profileCountryInput].forEach((input) => {
+
+[profileNameInput, ...profileGenderInputs].forEach((input) => {
 	input.addEventListener('input', updateSaveButton);
 	input.addEventListener('change', updateSaveButton);
+});
+
+[profileAutoMessageEnabled, profileAutoMessageInput].forEach((input) => {
+	input.addEventListener('input', updateSaveButton);
+	input.addEventListener('change', updateSaveButton);
+});
+
+profileCountryInput.addEventListener('click', () => {
+	const isOpen = !profileCountryMenu.hidden;
+	profileCountryMenu.hidden = isOpen;
+	profileCountryInput.setAttribute('aria-expanded', String(!isOpen));
+	if (!isOpen) {
+		profileCountrySearch.value = '';
+		populateCountries();
+		window.setTimeout(() => profileCountrySearch.focus(), 0);
+	}
+});
+profileCountrySearch.addEventListener('input', populateCountries);
+profileCountryList.addEventListener('click', (event) => {
+	const option = event.target.closest('[data-country]');
+	if (option) {
+		setProfileCountry(option.dataset.country);
+	}
 });
 
 profileSaveButton.addEventListener('click', () => {
 	const nextDetails = getEditedDetails();
 	if (!isCompleteProfile(nextDetails)) {
 		profileNameInput.focus();
+		return;
+	}
+	if (validateAutoMessage(nextDetails.autoMessage)) {
+		updateSaveButton();
+		profileAutoMessageInput.focus();
 		return;
 	}
 
@@ -157,7 +251,9 @@ profileSaveButton.addEventListener('click', () => {
 
 	renderProfileDetails();
 	leaveProfileEdit();
+	closeProfile();
 	if (chatSocket && chatSocket.connected) {
+		setWaitingState();
 		chatSocket.emit('join-pool', profileDetails);
 	}
 });
@@ -194,6 +290,7 @@ let isMatched = false;
 let isTyping = false;
 let stopTypingTimer = null;
 let matchedPartner = null;
+let autoMessageSent = false;
 
 const resetTypingState = () => {
 	isTyping = false;
@@ -213,11 +310,14 @@ updateMobileViewport();
 window.addEventListener('resize', updateMobileViewport, { passive: true });
 window.visualViewport?.addEventListener('resize', updateMobileViewport, { passive: true });
 
-const setWaitingState = () => {
+const setWaitingState = (isOffline = false) => {
 	isMatched = false;
+	matchedPartner = null;
+	autoMessageSent = false;
 	resetTypingState();
 	chatShell.classList.remove('is-connected');
 	chatConnectionCard.classList.remove('is-connected');
+	chatEmptyState.classList.toggle('is-offline', isOffline);
 	chatNextButton.hidden = true;
 	matchedGenderIcon.removeAttribute('src');
 	matchedName.textContent = '';
@@ -268,6 +368,11 @@ const setMatchedState = (partner) => {
 	chatMessageInput.disabled = false;
 	chatSendButton.disabled = false;
 	chatMessageInput.focus();
+	if (!autoMessageSent && profileDetails.autoMessageEnabled && profileDetails.autoMessage) {
+		autoMessageSent = true;
+		chatSocket.emit('message', profileDetails.autoMessage);
+		addMessage(profileDetails.autoMessage, true);
+	}
 };
 
 const showTypingVideo = (gender) => {
@@ -387,10 +492,21 @@ if (chatSocket) {
 	chatSocket.on('waiting', setWaitingState);
 	chatSocket.on('matched', setMatchedState);
 	chatSocket.on('partner-left', setWaitingState);
+	chatSocket.on('disconnect', () => {
+		if (isMatched) {
+			setWaitingState(true);
+		}
+	});
 	chatSocket.on('typing', (typingUser) => showTypingVideo(typingUser.gender));
 	chatSocket.on('stop-typing', hideTypingVideo);
 	chatSocket.on('message', (message) => addMessage(message.text, false, message.sender));
 }
+
+window.addEventListener('offline', () => {
+	if (isMatched) {
+		setWaitingState(true);
+	}
+});
 
 chatNextButton.addEventListener('click', () => {
 	if (chatSocket && isMatched) {

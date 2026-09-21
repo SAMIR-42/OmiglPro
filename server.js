@@ -6,7 +6,10 @@ const blockedWords = require('./blocked-words');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    pingInterval: 2500,
+    pingTimeout: 5000
+});
 const waitingUsers = new Map();
 const matchedUsers = new Map();
 const port = process.env.PORT || 3000;
@@ -91,7 +94,7 @@ io.on('connection', (socket) => {
             return;
         }
 
-        releaseMatch(socket.id);
+        releaseMatch(socket.id, true);
         removeFromWaiting(socket.id);
         socket.data.profile = {
             name: profile.name.trim().slice(0, 40),
@@ -120,7 +123,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('typing', () => {
-        console.log('Typing event received from:', socket.id); // TEMP DEBUG
+       
         const partnerId = matchedUsers.get(socket.id);
         const partner = partnerId ? io.sockets.sockets.get(partnerId) : null;
         if (partner && socket.data.profile && (socket.data.profile.gender === 'male' || socket.data.profile.gender === 'female')) {
@@ -146,6 +149,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         removeFromWaiting(socket.id);
         releaseMatch(socket.id, true);
+        matchWaitingUsers();
     });
 });
 
