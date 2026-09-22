@@ -1,0 +1,620 @@
+/* =========================================
+   OMIGLPRO — TERMS OF SERVICE
+   ========================================= */
+
+:root {
+    --terms-bg: #070b14;
+    --terms-surface: #0d1422;
+    --terms-surface-light: #111a2b;
+    --terms-border: rgba(255, 255, 255, 0.08);
+
+    --terms-text: #f5f7fb;
+    --terms-text-soft: #aab4c5;
+    --terms-text-muted: #737f92;
+
+    --terms-blue: #3b82f6;
+    --terms-blue-light: #60a5fa;
+    --terms-blue-soft: rgba(59, 130, 246, 0.12);
+
+    --terms-max-width: 850px;
+}
+
+
+/* =========================================
+   RESET
+   ========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at 50% -10%,
+            rgba(59, 130, 246, 0.12),
+            transparent 38%
+        ),
+        var(--terms-bg);
+
+    color: var(--terms-text);
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    line-height: 1.7;
+
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+
+/* =========================================
+   PAGE
+   ========================================= */
+
+.terms-page {
+    width: min(100% - 32px, var(--terms-max-width));
+
+    margin: 0 auto;
+
+    padding:
+        48px 0
+        70px;
+}
+
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.terms-header {
+    padding-bottom: 42px;
+
+    border-bottom: 1px solid var(--terms-border);
+}
+
+
+.terms-logo {
+    display: inline-block;
+
+    margin-bottom: 30px;
+
+    color: var(--terms-text);
+
+    font-size: 1.35rem;
+    font-weight: 750;
+
+    letter-spacing: -0.04em;
+
+    text-decoration: none;
+}
+
+
+.terms-logo span {
+    display: inline-block;
+
+    margin-left: 2px;
+    padding: 1px 6px;
+
+    border-radius: 5px;
+
+    background: var(--terms-blue);
+
+    color: #ffffff;
+}
+
+
+.terms-badge {
+    display: inline-flex;
+    align-items: center;
+
+    width: fit-content;
+
+    margin-bottom: 18px;
+    padding: 6px 11px;
+
+    border: 1px solid rgba(59, 130, 246, 0.22);
+
+    border-radius: 999px;
+
+    background: var(--terms-blue-soft);
+
+    color: var(--terms-blue-light);
+
+    font-size: 0.76rem;
+    font-weight: 650;
+
+    letter-spacing: 0.02em;
+}
+
+
+.terms-header h1 {
+    max-width: 700px;
+
+    color: var(--terms-text);
+
+    font-size: clamp(2rem, 6vw, 3.35rem);
+
+    font-weight: 750;
+
+    line-height: 1.08;
+
+    letter-spacing: -0.045em;
+}
+
+
+.terms-intro {
+    max-width: 730px;
+
+    margin-top: 22px;
+
+    color: var(--terms-text-soft);
+
+    font-size: 1.02rem;
+
+    line-height: 1.8;
+}
+
+
+.terms-meta {
+    margin-top: 22px;
+
+    color: var(--terms-text-muted);
+
+    font-size: 0.84rem;
+}
+
+
+/* =========================================
+   CONTENT
+   ========================================= */
+
+.terms-content {
+    padding-top: 42px;
+}
+
+
+.terms-content section {
+    margin-bottom: 46px;
+}
+
+
+.terms-content h2 {
+    margin-bottom: 15px;
+
+    color: var(--terms-text);
+
+    font-size: clamp(1.35rem, 3vw, 1.65rem);
+
+    font-weight: 700;
+
+    line-height: 1.3;
+
+    letter-spacing: -0.025em;
+}
+
+
+.terms-content h3 {
+    margin-top: 27px;
+    margin-bottom: 9px;
+
+    color: #e8edf6;
+
+    font-size: 1.03rem;
+
+    font-weight: 650;
+
+    line-height: 1.4;
+}
+
+
+.terms-content p {
+    margin-bottom: 15px;
+
+    color: var(--terms-text-soft);
+
+    font-size: 0.97rem;
+
+    line-height: 1.8;
+}
+
+
+.terms-content p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* =========================================
+   LISTS
+   ========================================= */
+
+.terms-content ul,
+.terms-content ol {
+    margin: 18px 0 0;
+
+    padding-left: 23px;
+}
+
+
+.terms-content li {
+    margin-bottom: 9px;
+
+    padding-left: 4px;
+
+    color: var(--terms-text-soft);
+
+    font-size: 0.96rem;
+
+    line-height: 1.7;
+}
+
+
+.terms-content li::marker {
+    color: var(--terms-blue-light);
+}
+
+
+/* =========================================
+   LINKS
+   ========================================= */
+
+.terms-content a {
+    color: var(--terms-blue-light);
+
+    text-decoration: none;
+}
+
+
+.terms-content a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================
+   IMPORTANT TERMS / NOTICE
+   ========================================= */
+
+.terms-note {
+    margin-top: 24px;
+
+    padding: 18px 19px;
+
+    border: 1px solid rgba(59, 130, 246, 0.18);
+
+    border-left: 3px solid var(--terms-blue);
+
+    border-radius: 10px;
+
+    background: var(--terms-blue-soft);
+
+    color: var(--terms-text-soft);
+
+    font-size: 0.91rem;
+
+    line-height: 1.7;
+}
+
+
+.terms-note strong {
+    color: var(--terms-text);
+}
+
+
+/* =========================================
+   WARNING / IMPORTANT SECTION
+   ========================================= */
+
+.terms-warning {
+    margin-top: 24px;
+
+    padding: 18px 19px;
+
+    border: 1px solid rgba(255, 255, 255, 0.09);
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.025);
+
+    color: var(--terms-text-soft);
+
+    font-size: 0.91rem;
+
+    line-height: 1.7;
+}
+
+
+.terms-warning strong {
+    color: var(--terms-text);
+}
+
+
+/* =========================================
+   CONTACT NOTE
+   ========================================= */
+
+.terms-contact-note {
+    padding: 14px 16px;
+
+    border: 1px solid var(--terms-border);
+
+    border-radius: 9px;
+
+    background: rgba(255, 255, 255, 0.025);
+
+    color: var(--terms-text-muted) !important;
+
+    font-size: 0.88rem !important;
+}
+
+
+/* =========================================
+   FINAL SECTION
+   ========================================= */
+
+.terms-final {
+    margin-top: 65px;
+    margin-bottom: 0 !important;
+
+    padding: 30px;
+
+    border: 1px solid var(--terms-border);
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(59, 130, 246, 0.08),
+            rgba(255, 255, 255, 0.02)
+        );
+}
+
+
+.terms-final h2 {
+    margin-bottom: 12px;
+
+    font-size: 1.55rem;
+}
+
+
+.terms-final p {
+    max-width: 700px;
+}
+
+
+/* =========================================
+   CTA
+   ========================================= */
+
+.terms-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 44px;
+
+    margin-top: 9px;
+    padding: 10px 17px;
+
+    border: 1px solid rgba(59, 130, 246, 0.35);
+
+    border-radius: 9px;
+
+    background: var(--terms-blue);
+
+    color: #ffffff !important;
+
+    font-size: 0.9rem;
+    font-weight: 650;
+
+    text-decoration: none !important;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.terms-cta:hover {
+    background: #2563eb;
+
+    box-shadow:
+        0 8px 25px rgba(37, 99, 235, 0.22);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================
+   FOOTER
+   ========================================= */
+
+.terms-footer {
+    margin-top: 55px;
+    padding-top: 25px;
+
+    border-top: 1px solid var(--terms-border);
+
+    text-align: center;
+}
+
+
+.terms-footer a {
+    color: var(--terms-text-muted);
+
+    font-size: 0.82rem;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+
+.terms-footer a:hover {
+    color: var(--terms-text);
+}
+
+
+.terms-footer span {
+    margin: 0 8px;
+
+    color: rgba(255, 255, 255, 0.2);
+
+    font-size: 0.75rem;
+}
+
+
+.terms-footer p {
+    margin-top: 12px;
+
+    color: var(--terms-text-muted);
+
+    font-size: 0.76rem;
+}
+
+
+/* =========================================
+   TABLET
+   ========================================= */
+
+@media (min-width: 600px) {
+
+    .terms-page {
+        width: min(100% - 48px, var(--terms-max-width));
+
+        padding-top: 65px;
+        padding-bottom: 90px;
+    }
+
+    .terms-header {
+        padding-bottom: 50px;
+    }
+
+    .terms-content {
+        padding-top: 50px;
+    }
+
+    .terms-content p {
+        font-size: 0.99rem;
+    }
+
+}
+
+
+/* =========================================
+   DESKTOP
+   ========================================= */
+
+@media (min-width: 900px) {
+
+    .terms-page {
+        width: min(100% - 64px, var(--terms-max-width));
+
+        padding-top: 78px;
+    }
+
+    .terms-header h1 {
+        font-size: 3.35rem;
+    }
+
+    .terms-intro {
+        font-size: 1.04rem;
+    }
+
+    .terms-content section {
+        margin-bottom: 52px;
+    }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+   ========================================= */
+
+@media (max-width: 430px) {
+
+    .terms-page {
+        width: min(100% - 24px, var(--terms-max-width));
+
+        padding-top: 32px;
+        padding-bottom: 55px;
+    }
+
+    .terms-logo {
+        margin-bottom: 24px;
+    }
+
+    .terms-header {
+        padding-bottom: 32px;
+    }
+
+    .terms-content {
+        padding-top: 34px;
+    }
+
+    .terms-content section {
+        margin-bottom: 38px;
+    }
+
+    .terms-content p {
+        font-size: 0.93rem;
+        line-height: 1.75;
+    }
+
+    .terms-content li {
+        font-size: 0.92rem;
+    }
+
+    .terms-note,
+    .terms-warning {
+        padding: 15px 16px;
+    }
+
+    .terms-final {
+        padding: 22px 19px;
+    }
+
+    .terms-footer {
+        margin-top: 42px;
+    }
+
+    .terms-footer span {
+        margin: 0 4px;
+    }
+
+}
+
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    .terms-cta {
+        transition: none;
+    }
+
+}
