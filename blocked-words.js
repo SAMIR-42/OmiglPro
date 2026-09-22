@@ -232,6 +232,26 @@ const omiglproBlockedWords = [
 
 if (typeof window !== 'undefined') {
     window.omiglproBlockedWords = omiglproBlockedWords;
+    window.omiglproIsBlockedName = (value) => {
+        const normalizedName = value
+            .normalize('NFKD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .replace(/[04@]/g, (character) => ({ '0': 'o', '4': 'a', '@': 'a' })[character])
+            .replace(/[1!]/g, 'i')
+            .replace(/[3]/g, 'e')
+            .replace(/[5$]/g, 's')
+            .replace(/[^a-z0-9]/g, '');
+
+        return omiglproBlockedWords.some((word) => {
+            const normalizedWord = word
+                .normalize('NFKD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, '');
+            return normalizedWord.length >= 3 && normalizedName === normalizedWord;
+        });
+    };
 }
 
 if (typeof module !== 'undefined' && module.exports) {

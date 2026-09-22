@@ -39,7 +39,8 @@ const countryOptions = [
 ];
 
 const formatGender = (gender) => gender ? gender.charAt(0).toUpperCase() + gender.slice(1) : 'Not provided';
-const isValidName = (name) => /^[A-Za-z]{1,7}$/.test(name.trim());
+const isValidName = (name) => /^[A-Za-z]{1,7}$/.test(name.trim())
+	&& !(typeof window.omiglproIsBlockedName === 'function' && window.omiglproIsBlockedName(name));
 const normalizeAutoMessage = (value) => value.replace(/\s+/g, ' ').trim();
 const countAutoMessageWords = (value) => value ? value.split(/\s+/).length : 0;
 const containsBlockedWord = (value) => {
@@ -118,7 +119,7 @@ const enterProfileEdit = (requiresSetup = false) => {
 	profileView.classList.add('is-editing');
 	profileView.classList.toggle('is-required', requiresSetup);
 	profileRequiredMessage.hidden = !requiresSetup;
-	profileRequiredMessage.textContent = 'Name must be 1 to 7 letters, with no numbers or symbols.';
+	profileRequiredMessage.textContent = 'Name must be 1 to 7 letters, with no numbers or symbols, and must not be restricted.';
 	profileEditButton.hidden = true;
 	profileSaveButton.hidden = !requiresSetup;
 	profileSaveButton.disabled = true;

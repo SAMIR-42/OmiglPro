@@ -303,20 +303,8 @@ const countries = [
     ['Sweden', 'SE'], ['Netherlands', 'NL']
 ];
 
-const normalizeName = (value) => value
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[04@]/g, (character) => ({ '0': 'o', '4': 'a', '@': 'a' })[character])
-    .replace(/[1!]/g, 'i')
-    .replace(/[3]/g, 'e')
-    .replace(/[5$]/g, 's')
-    .replace(/[^a-z0-9]/g, '');
-
-const hasBlockedName = (value) => {
-    const normalized = normalizeName(value);
-    return window.omiglproBlockedWords.some((word) => normalized.includes(normalizeName(word)));
-};
+const hasBlockedName = (value) => typeof window.omiglproIsBlockedName === 'function'
+    && window.omiglproIsBlockedName(value);
 
 const isValidName = (value) => /^[A-Za-z]{1,7}$/.test(value);
 
